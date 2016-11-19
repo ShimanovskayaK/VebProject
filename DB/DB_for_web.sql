@@ -11,7 +11,7 @@ INSERT INTO `Users` VALUES ('User2','tgdfgd23232',9,'Я не очень','gfgd@m
 CREATE TABLE "Timetable" (
 	`Name_event`	TEXT NOT NULL,
 	`Time`	INTEGER NOT NULL,
-	`Data`	INTEGER NOT NULL,
+	`Data`	DATA NOT NULL,
 	`About`	TEXT,
 	`Room`	INTEGER
 );
@@ -42,7 +42,7 @@ CREATE TABLE "Comments" (
 	`Text`	TEXT NOT NULL,
 	`Name`	TEXT NOT NULL,
 	`Name_comment`	TEXT,
-	`Data`	INTEGER NOT NULL,
+	`Data`	DATA NOT NULL,
 	`Id_img`	INTEGER
 );
 INSERT INTO `Comments` VALUES ('Чудесное место!','User1','Понравилось!','27.14.16',4);
