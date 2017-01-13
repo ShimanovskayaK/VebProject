@@ -13,6 +13,10 @@ from sqlalchemy.orm import sessionmaker
 
 from models import *
 
+class MyFactory(object):
+    def __init__(self, request):
+        self.__acl__ = [(Allow, Authenticated, "add")]
+
 my_session_factory = SignedCookieSessionFactory('autograph')
 
 def main(global_config, **settings):
@@ -21,7 +25,7 @@ def main(global_config, **settings):
     settings = dict(settings)
     settings.setdefault('jinja2.i18n.domain', 'autograph')
 
-    config = Configurator(root_factory=get_root, settings=settings, session_factory=my_session_factory)
+    config = Configurator(root_factory=MyFactory, settings=settings, session_factory=my_session_factory)
     config.include('pyramid_jinja2')
 
     config.add_static_view('static', 'static')
@@ -49,8 +53,6 @@ def main(global_config, **settings):
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
 
-    inspector = inspect(engine)
-    print(inspector.get_table_names())
     #админ
     sessio = Session(bind = engine)
     new_admin = Admins(Login = 'admin',

@@ -17,86 +17,67 @@ HTTPNotFound,
 )
 
 #добавляет при посте
-@view_config(route_name='addTable', renderer='templates/addTable.jinja2')
+@view_config(route_name='addTable', renderer='templates/addTable.jinja2', permission = 'add')
 def addTable(request):
-	user = Session(bind=engine).query(Admins).filter(Admins.Login == request.authenticated_userid).first()
-	if user!= None and request.authenticated_userid != None:
-		if request.method == 'POST':
-			session = Session(bind = engine)
-			timetable = Timetable(Name_event = request.params["Name_event"],
-									Data = request.params["Data"],
-									Time = request.params["Time"],
-									About = request.params["About"])
-			session.add(timetable)
-			session.commit()
-			return HTTPFound(location = request.route_url('adminEditTable', _query={'username': request.authenticated_userid,
-																				'timeTables' : Session(bind=engine).query(Timetable).all()}))
-		else:
-			return {'username': request.authenticated_userid }
+	if request.method == 'POST':
+		session = Session(bind = engine)
+		timetable = Timetable(Name_event = request.params["Name_event"],
+								Data = request.params["Data"],
+								Time = request.params["Time"],
+								About = request.params["About"])
+		session.add(timetable)
+		session.commit()
+		return HTTPFound(location = request.route_url('adminEditTable', _query={'username': request.authenticated_userid}))
 	else:
-		return HTTPNotFound()
+		return {'username': request.authenticated_userid }
 
 #редактирует при посте
-@view_config(route_name='adminEditTableEdit', renderer='templates/adminEditTableEdit.jinja2')
+@view_config(route_name='adminEditTableEdit', renderer='templates/adminEditTableEdit.jinja2', permission = 'add')
 def adminEditTableEdit(request):
-	user = Session(bind=engine).query(Admins).filter(Admins.Login == request.authenticated_userid).first()
-	if user!= None and request.authenticated_userid != None:
-		if request.method == 'POST':
-			session = Session(bind = engine)
-			timetable = session.query(Timetable).filter(Timetable.id == request.matchdict['id']).first()
-			session.delete(timetable)
-			session.commit()
-			timetable = Timetable(Name_event = request.params["Name_event"],
-									Data = request.params["Data"],
-									Time = request.params["Time"],
-									About = request.params["About"])
-			session.add(timetable)
-			session.commit()
-			times = session.query(Timetable).all()
-			return HTTPFound(location = request.route_url('adminEditTable', _query={'username': request.authenticated_userid,
-																				'timeTables' : times}))
-		else:
-			print(request.matchdict['id'])
-			return {'username': request.authenticated_userid,
-					"timeTable" : Session(bind=engine).query(Timetable).filter(Timetable.id == request.matchdict['id']).first()}
+	session = Session(bind = engine)
+	if request.method == 'POST':
+		timetable = session.query(Timetable).filter(Timetable.id == request.matchdict['id']).first()
+		session.delete(timetable)
+		session.commit()
+		timetable = Timetable(Name_event = request.params["Name_event"],
+								Data = request.params["Data"],
+								Time = request.params["Time"],
+								About = request.params["About"])
+		session.add(timetable)
+		session.commit()
+		times = session.query(Timetable).all()
+		return HTTPFound(location = request.route_url('adminEditTable', _query={'username': request.authenticated_userid}))
 	else:
-		return HTTPNotFound()
+		return {'username': request.authenticated_userid,
+				"timeTable" : Session(bind=engine).query(Timetable).filter(Timetable.id == request.matchdict['id']).first()}
 
 #Удаляет при посте
-@view_config(route_name='adminEditTable', renderer='templates/adminEditTable.jinja2')
+@view_config(route_name='adminEditTable', renderer='templates/adminEditTable.jinja2', permission = 'add')
 def adminEditTable(request):
-	user = Session(bind=engine).query(Admins).filter(Admins.Login == request.authenticated_userid).first()
-	if user!= None and request.authenticated_userid != None:
-		if request.method == 'POST':
-			session = Session(bind = engine)
-			timetable = session.query(Timetable).filter(Timetable.id == request.params['id']).first()
-			session.delete(timetable)
-			session.commit()
-			return {'username': request.authenticated_userid,
-					"timeTables" : Session(bind=engine).query(Timetable).all()}
-		else:
-			return {'username': request.authenticated_userid,
-					"timeTables" : Session(bind=engine).query(Timetable).all()}
+	if request.method == 'POST':
+		session = Session(bind = engine)
+		timetable = session.query(Timetable).filter(Timetable.id == request.params['id']).first()
+		session.delete(timetable)
+		session.commit()
+		return {'username': request.authenticated_userid,
+				"timeTables" : Session(bind=engine).query(Timetable).all()}
 	else:
-		return HTTPNotFound()
+		return {'username': request.authenticated_userid,
+				"timeTables" : Session(bind=engine).query(Timetable).all()}
 
 
-@view_config(route_name='adminEditComment', renderer='templates/adminEditComment.jinja2')
+@view_config(route_name='adminEditComment', renderer='templates/adminEditComment.jinja2', permission = 'add')
 def adminEditComment(request):
-	user = Session(bind=engine).query(Admins).filter(Admins.Login == request.authenticated_userid).first()
-	if user!= None and request.authenticated_userid != None:
-		if request.method == 'POST':
-			session = Session(bind = engine)
-			comment = session.query(Comments).filter(Comments.id == request.params['id']).first()
-			session.delete(comment)
-			session.commit()
-			return {'username': request.authenticated_userid,
-					"comments" : Session(bind=engine).query(Comments).all()}
-		else:
-			return {'username': request.authenticated_userid,
-					"comments" : Session(bind=engine).query(Comments).all()}
+	if request.method == 'POST':
+		session = Session(bind = engine)
+		comment = session.query(Comments).filter(Comments.id == request.params['id']).first()
+		session.delete(comment)
+		session.commit()
+		return {'username': request.authenticated_userid,
+				"comments" : Session(bind=engine).query(Comments).all()}
 	else:
-		return HTTPNotFound()
+		return {'username': request.authenticated_userid,
+				"comments" : Session(bind=engine).query(Comments).all()}
 
 
 @view_config(route_name='admin', renderer='templates/admin.jinja2')

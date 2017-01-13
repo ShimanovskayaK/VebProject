@@ -9,7 +9,7 @@
 <body >
 	<div id="main" class="col-md-10 col-sm-10 col-xs-10 col-sm-offset-1 col-xs-offset-1 col-md-offset-1">
 		<div id="doubleMain" class="col-md-12 col-sm-12 col-xs-12">
-			<div class="col-md-8 col-xs-8 col-sm-8 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+			<div class="col-md-12 col-xs-12 col-sm-12">
 				<div class="row">
 					<ul class="nav nav-justified list">
 						<li class="li">
@@ -18,6 +18,9 @@
 						<li class="li">
 							<a class="a elMenu" href="/adminEditTable">Менять расписание</a>
 						</li>
+						<li class="li">
+							<a class="a elMenu" href="/logOut.html">Выйти</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -25,31 +28,35 @@
 
         	<br>
             <form action="/addTable" method="GET">
-            	<div class="col-md-10 col-xs-10 col-sm-10 col-xs-offset-1 col-sm-1 col-md-offset-1">
-            		<input type="submit" class="form-control" value="Добавить расписание">
+            	<div class="col-md-11 col-xs-11 col-sm-11 col-xs-offset-1 col-sm-1 col-md-offset-1">
+            		<div class="col-md-3 col-xs-3 col-sm-3">
+            			<input type="submit" class="form-control" value="Добавить расписание">
+            		</div>
             	</div>
             </form>
 				
 
 			{% for time in timeTables %}
-				<div class="comment col-md-6 col-sm-6 col-xs-6 col-md-offset-1 col-xs-offset-1 col-sm-offset-1">
-					<p> 
-						<span class="head">{{time.Name_event}}</span><br>
-					 	<span class="small">{{time.Data}}, {{time.Time}}</span><br>
-					 	<span class="comment">{{time.About}}</span>
-					</p>
+				<div class="col-md-12 col-xs-12 col-sm-12">
+					<div class="comment col-md-6 col-sm-6 col-xs-6 col-md-offset-1 col-xs-offset-1 col-sm-offset-1">
+						<p> 
+							<span class="head">{{time.Name_event}}</span><br>
+						 	<span class="small">{{time.Data}}, {{time.Time}}</span><br>
+						 	<span class="comment">{{time.About}}</span>
+						</p>
+					</div>
+					<form action="/adminEditTableEdit/{{time.id}}" method="GET">
+						<div class="col-md-2 col-sm-2 col-xs-2" >
+						<input type="submit" value="Редактировать" class="form-control">
+						</div>
+					</form>
+					<form action="/adminEditTable" method="POST">
+						<div class="col-md-2 col-sm-2 col-xs-2" >
+					 	<input type="text" readonly="readonly" name="id" value="{{time.id}}">
+						<input type="submit" value="Удалить" class="form-control">
+						</div>
+					</form>
 				</div>
-				<form action="/adminEditTableEdit/{{time.id}}" method="GET">
-					<div class="col-md-2 col-sm-2 col-xs-2" >
-					<input type="submit" value="Редактировать" class="form-control">
-					</div>
-				</form>
-				<form action="/adminEditTable" method="POST">
-					<div class="col-md-2 col-sm-2 col-xs-2" >
-				 	<input type="text" readonly="readonly" name="id" value="{{time.id}}">
-					<input type="submit" value="Удалить" class="form-control">
-					</div>
-				</form>
 			{% endfor %}
         </div>
 	</div>
